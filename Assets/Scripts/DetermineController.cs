@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -6,6 +7,7 @@ using UnityEngine;
 public class DetermineController : MonoBehaviour
 {
     private List<Note> _notes = new List<Note>();
+    private List<Note> _distinctNotes = new List<Note>();
     public float BPM;
     public int perfectRange;
     public int goodRange;
@@ -15,12 +17,21 @@ public class DetermineController : MonoBehaviour
 
     void Start()
     {
-        for (int i = 2; i < 10; i++)
-        {
-            _notes.Add(new Note(0, i, BPM, perfectRange, goodRange));
-        }
         _timerScript = GameObject.Find("TimeController").GetComponent<TimerScript>();
         determineStatus.text = "Perfect";
+        TextAsset jsonText = Resources.Load("Notes") as TextAsset;
+        JsonData jsonData = JsonUtility.FromJson<JsonData>(jsonText.text);
+        foreach (var jsonDataJnote in jsonData.jnotes)
+        {
+            _notes.Add(new Note(jsonDataJnote.key, jsonDataJnote.beat, BPM, perfectRange, goodRange, jsonDataJnote.isRest));
+        }
+        TextAsset jsonText2 = Resources.Load("NotesTimeDistinct") as TextAsset;
+        JsonData jsonData2 = JsonUtility.FromJson<JsonData>(jsonText.text);
+        foreach (var jsonDataJnote2 in jsonData2.jnotes)
+        {
+            _distinctNotes.Add(new Note(jsonDataJnote2.key, jsonDataJnote2.beat, BPM, perfectRange, goodRange, jsonDataJnote2.isRest));
+        }
+        
     }
 
     void Update()
@@ -78,4 +89,16 @@ public class DetermineController : MonoBehaviour
         determineAnimator.Play("DetermineStatusAnimation");
         determineStatus.text = "Good!!";
     }
+}
+
+[Serializable]
+public class JsonData  {
+    public List<JsonNotes> jnotes;
+}
+
+[Serializable]
+public class JsonNotes {
+    public int key;
+    public float beat;
+    public bool isRest;
 }

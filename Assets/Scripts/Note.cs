@@ -11,13 +11,19 @@ public class Note
     private readonly int perfectRange;
     private readonly int goodRange;
     private bool status = false;
-    public Note(int key, float beat, float bpm, int perfectRange, int goodRange)
+    private bool isRect = false;
+    public Note(int key, float beat, float bpm, int perfectRange, int goodRange, bool isRect)
     {
         this.key = key;
         this.beat = beat;
         BPM = bpm;
         this.perfectRange = perfectRange;
         this.goodRange = goodRange;
+        this.isRect = isRect;
+        if (isRect)
+        {
+            status = true;
+        }
         CalcPerfectTime();
     }
 //100b / 60*1000
