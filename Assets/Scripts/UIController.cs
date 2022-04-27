@@ -16,12 +16,19 @@ public class UIController : MonoBehaviour
     // Snare
     // HihatClose
     // HihatOpen
-    public TextMeshProUGUI textMeshProUGUI;
+    public TextMeshProUGUI comboText;
+    public TextMeshProUGUI comboIcon;
     public TextMeshProUGUI timeText;
+    public TextMeshProUGUI scoreText;
     public int aa = 2;
     private AudioController audioController;
     private DetermineController determineController;
     private TimerScript _timerScript;
+    
+    public bool isCombo = false;
+    public int combo = 0;
+    public int score = 0;
+    
     // private TextMeshProUGUI timeText;
     // public 
     // Start is called before the first frame update
@@ -30,12 +37,13 @@ public class UIController : MonoBehaviour
         audioController = GameObject.Find("AudioController").GetComponent<AudioController>();
         determineController = GameObject.Find("DetermineController").GetComponent<DetermineController>();
         _timerScript = GameObject.Find("TimeController").GetComponent<TimerScript>();
+        timeText.enabled = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        textMeshProUGUI.text = "200";
+        
         
         if (Input.GetKeyDown(KeyCode.A))
         {
@@ -53,12 +61,32 @@ public class UIController : MonoBehaviour
         {
             HihatOpenTriggered();
         }
-        
+        else if(Input.GetKeyDown(KeyCode.Q))
+        {
+            CrashTriggered();
+        }
+        else if(Input.GetKeyDown(KeyCode.R))
+        {
+            FloorTomTriggered();
+        }
+
     }
 
     private void FixedUpdate()
     {
-        timeText.SetText(_timerScript.GetTime().ToString());
+        if (isCombo)
+        {
+            comboIcon.enabled = true;
+            comboText.enabled = true;
+            comboText.text = combo.ToString();
+        }
+        else
+        {
+            comboIcon.enabled = false;
+            comboText.enabled = false;
+        }    
+        scoreText.text = score.ToString();
+        
     }
 
     public void KickTriggered()
@@ -116,6 +144,38 @@ public class UIController : MonoBehaviour
 
     public void startTimer()
     {
+        StartCoroutine(delay3s());
+    }
+
+    private IEnumerator delay3s()
+    {
+        yield return new WaitForSeconds(0);
         _timerScript.StartTiming();
+        audioController.PlayMusic();
+    }
+    
+    // public void SetCombo(int combo)
+    // public void SetCombo(int combo)
+    // {
+    //     
+    //     textMeshProUGUI.text = combo.ToString();
+    // }
+    public void addCombo()
+    {
+        combo++;
+        if (combo>1)
+        {
+            isCombo = true;      
+        }
+        
+    }
+    public void clearCombo()
+    {
+        combo = 0;
+        isCombo = false;
+    }
+    public void addScore(int score)
+    {
+        this.score += score;
     }
 }

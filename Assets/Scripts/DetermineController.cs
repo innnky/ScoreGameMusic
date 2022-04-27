@@ -15,6 +15,7 @@ public class DetermineController : MonoBehaviour
     public TextMeshProUGUI determineStatus;
     public Animator determineAnimator;
     public AudioController audioController;
+    public UIController uiController;
     void Start()
     {
         _timerScript = GameObject.Find("TimeController").GetComponent<TimerScript>();
@@ -46,9 +47,25 @@ public class DetermineController : MonoBehaviour
                 {
                     audioController.PlayKick();
                 }
+                else if (_notes[i].GetKey() == 1)
+                {
+                    audioController.PlaySnare();
+                }
                 else if (_notes[i].GetKey()==2)
                 {
                     audioController.PlayHihatClose();
+                }
+                else if (_notes[i].GetKey()==3)
+                {
+                    audioController.PlayHihatOpen();
+                }
+                else if (_notes[i].GetKey()==4)
+                {
+                    audioController.PlayCrash();
+                }
+                else if (_notes[i].GetKey()==7)
+                {
+                    audioController.PlayFloorTom();
                 }
                 // audioController
                 MissTriggered();
@@ -84,12 +101,15 @@ public class DetermineController : MonoBehaviour
     {
         determineAnimator.Play("DetermineStatusAnimation");
         determineStatus.text = "Miss!!";
+        uiController.clearCombo();
     }
     //PerfectTriggered
     private void PerfectTriggered()
     {
         determineAnimator.Play("DetermineStatusAnimation");
         determineStatus.text = "Perfect!!";
+        uiController.addCombo();
+        uiController.addScore(25);
     }
     
     //goodTriggered
@@ -97,6 +117,8 @@ public class DetermineController : MonoBehaviour
     {
         determineAnimator.Play("DetermineStatusAnimation");
         determineStatus.text = "Good!!";
+        uiController.addCombo();
+        uiController.addScore(10);
     }
     //get _distinctNotes
     public List<Note> GetDistinctNotes()

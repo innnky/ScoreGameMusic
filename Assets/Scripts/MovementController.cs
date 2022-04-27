@@ -10,21 +10,26 @@ public class MovementController : MonoBehaviour
     public int xOffset;
     private Vector3 currentPos;
     private float lastX;
+    private Vector3 target;
+    private bool flag = false;
     void Start()
     {
         lastX = xOffset;
+        
     }
 
     void FixedUpdate()
     {
-        // bgs.transform.Translate(0.03f,0,0);
-        
+        if (flag)
+        {
+            bgs.transform.position = Vector3.Lerp(bgs.transform.position, target, 0.3f);
+        }
     }
     
     public void MoveToRealX(float x)
     {
-        
-        bgs.transform.Translate(x-lastX,0,0);
+        target = new Vector3(bgs.transform.position.x +x-lastX, bgs.transform.position.y, bgs.transform.position.z);
         lastX = x;
+        flag = true;
     }
 }

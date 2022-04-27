@@ -17,16 +17,10 @@ public class StaffController : MonoBehaviour
     public TimerScript timerScript;
     public DetermineController determineController;
 
-    public GameObject image;
-    public GameObject mask;
     public GameObject staffParent;
 
     public GameObject referenceImage;
     
-    public float imageStartY;
-    public float maskStartY;
-    public float imageLineInterval;
-    public float imageOffsetX;
     
     public float actualWidth;
     public float actualHeight;
@@ -43,7 +37,7 @@ public class StaffController : MonoBehaviour
     {
         initCurrentLine();
         initNotePos();
-        staffImageManager = new StaffImageManager(image, staffParent, notePosList,
+        staffImageManager = new StaffImageManager(staffParent, notePosList,
             determineController.GetDistinctNotes(), determineController.BPM, timerScript,this);
         // allStaffOffset = Vector2.zero;
     }

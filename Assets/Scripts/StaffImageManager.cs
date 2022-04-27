@@ -2,10 +2,10 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class StaffImageManager
 {
-    private GameObject image;
     private GameObject staffParent;
     private List<GameObject> staffList;
     private List<NotePos> notePositions;
@@ -17,11 +17,10 @@ public class StaffImageManager
     private int preNum = 20;
     private int newestY = 0;
     private StaffController staffController;
-    public StaffImageManager(GameObject image, GameObject staffParent,
+    public StaffImageManager( GameObject staffParent,
         List<NotePos> notePositions,
         List<Note> notes, float BPM, TimerScript timer, StaffController staffController)
     {
-        this.image = image;
         this.staffParent = staffParent;
         this.staffList = new List<GameObject>();
         this.notePositions = notePositions;
@@ -32,6 +31,7 @@ public class StaffImageManager
         newestY = notePositions[0].getY();
         this.staffController = staffController;
         beatPerBar = staffController.beatsPerBar;
+        firstLoadImageFromResource();
         initImage();
         initBars();
     }
@@ -94,7 +94,8 @@ public class StaffImageManager
     {
         Vector3 newPos = new Vector3(lastPos.x + staffController.actualStaffWidth - newLineNote.getActualX(),
             lastPos.y + newLineNote.getActualY() - oldLineNote.getActualY(), 0);
-        GameObject staff = GameObject.Instantiate(image, newPos, Quaternion.identity);
+        
+        GameObject staff = createImage(newPos);
         staffList.Add(staff);
         lastPos = newPos;
         staff.transform.SetParent(staffParent.transform);
@@ -108,9 +109,27 @@ public class StaffImageManager
     private void initImage()
     {
         lastPos = new Vector3(staffController.staffOffset.x, staffController.staffOffset.y, 0);
-        GameObject staff = GameObject.Instantiate(image, lastPos, Quaternion.identity);
+        GameObject staff = createImage(lastPos);
         staff.transform.SetParent(staffParent.transform);
         staffList.Add(staff);
+    }
+
+    GameObject testImg = new GameObject();
+    private void firstLoadImageFromResource()
+    {
+        SpriteRenderer spriteRenderer = testImg.AddComponent<SpriteRenderer>();
+        Texture2D tex = Resources.Load("ms-1") as Texture2D;
+        var sprite = Sprite.Create(tex, new Rect(0,0, tex.width,tex.height), new Vector2(0, 0));
+        spriteRenderer.sprite = sprite;
+        spriteRenderer.sortingLayerName="Top";
+        testImg.transform.localScale = new Vector3(2.0546875f, 2.0546875f);
+        spriteRenderer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+    }
+
+    private GameObject createImage(Vector3 pos)
+    {
+        return GameObject.Instantiate(testImg, pos, Quaternion.identity);
+       
     }
 
     public float getCurrentPositon()

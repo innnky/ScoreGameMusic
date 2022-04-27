@@ -9,7 +9,10 @@ public class AudioController : MonoBehaviour
     public AudioSource hc;
     public AudioSource ho;
     public AudioSource snare;
+    public AudioSource tom;
+    public AudioSource crash;
 
+    public AudioSource music;
     public DetermineController determineController;
     // Start is called before the first frame update
     void Start()
@@ -33,15 +36,6 @@ public class AudioController : MonoBehaviour
     {
         snare.Play();
     }
-    public void PlayHc()
-    {
-        hc.Play();
-    }
-    public void PlayHo()
-    {
-        ho.Play();
-    }
-
     public void PlayHihatOpen()
     {
         ho.Play();
@@ -54,7 +48,7 @@ public class AudioController : MonoBehaviour
 
     public void PlayCrash()
     {
-        
+        crash.Play();
     }
 
     public void PlayRing()
@@ -70,6 +64,11 @@ public class AudioController : MonoBehaviour
 
     public void PlayFloorTom()
     {
-        
+        tom.Play();
+    }
+    
+    public void PlayMusic()
+    {
+        music.Play();
     }
 }
