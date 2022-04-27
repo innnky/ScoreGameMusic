@@ -20,12 +20,23 @@ public class StaffController : MonoBehaviour
     public GameObject image;
     public GameObject mask;
     public GameObject staffParent;
+
+    public GameObject referenceImage;
     
+    public float imageStartY;
+    public float maskStartY;
+    public float imageLineInterval;
+    public float imageOffsetX;
     
+    public float actualWidth;
+    public float actualHeight;
+    public float actualStaffWidth;  
     //private
     private GameObject currentLine;
     private List<NotePos> notePosList;
     private StaffImageManager staffImageManager;
+    public Vector2 staffOffset;
+    // public Vector2 allStaffOffset;
     
     void Start()
     {
@@ -33,17 +44,16 @@ public class StaffController : MonoBehaviour
         initNotePos();
         staffImageManager = new StaffImageManager(image, staffParent, notePosList,
             determineController.GetDistinctNotes(), determineController.BPM, timerScript,this);
+        // allStaffOffset = Vector2.zero;
     }
 
     void FixedUpdate()
     {
         staffImageManager.update();
+
         float currentPositon = staffImageManager.getCurrentPositon();
-        currentLine.transform.position = new Vector3(currentLineStartX+currentPositon/scale, currentLineStartY, 0);
+        currentLine.transform.position = new Vector3(currentLineStartX+currentPositon, currentLineStartY, 0);
     }
-    
-    float fixInterval = 0.85f;
-    float fixNoteStartInterval = 0.85f;
     
 
     private void initCurrentLine()
@@ -53,27 +63,41 @@ public class StaffController : MonoBehaviour
 
     private void initNotePos()
     {
+        SpriteRenderer spriteRenderer = referenceImage.GetComponent<SpriteRenderer>();
+        actualWidth = spriteRenderer.sprite.bounds.size.x;
+        actualHeight = spriteRenderer.sprite.bounds.size.y;
         TextAsset jsonText = Resources.Load("NotesPos") as TextAsset;
         PosData posData = JsonUtility.FromJson<PosData>(jsonText.text);
         notePosList = new List<NotePos>();
-        int lineCount = 0;
-        int lastY = posData.positions[0].y;
+        int lineCount = -1;
+        int lastY = -1;
+        int lineStartX = -1;
         foreach (NotePosJson notePos in posData.positions)
         {
             if (lastY!=notePos.y)
             {
                 lineCount++;
+                lineStartX = notePos.x;
             }
             var pos = new NotePos(notePos);
             pos.setStaffWidth(staffWidth);
+            pos.setActualWidth(actualWidth);
+            pos.setActualHeight(actualHeight);
+            pos.setActualStaffWidth(actualStaffWidth);
             pos.setLine(lineCount);
             pos.setScale(scale);
+            pos.setRealX(lineCount * (actualStaffWidth - lineStartX * actualWidth / 35724f)+pos.getActualX());
             notePosList.Add(pos);
             lastY = notePos.y;
         }
         
     }
     
+    //get currentLine
+    public GameObject getCurrentLine()
+    {
+        return currentLine;
+    }
     
 }
 

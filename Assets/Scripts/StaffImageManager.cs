@@ -30,7 +30,10 @@ public class StaffImageManager
         this.timer = timer;
         newestY = notePositions[0].getY();
         this.staffController = staffController;
+        initImage();
     }
+
+    
 
     public void update()
     {
@@ -58,21 +61,37 @@ public class StaffImageManager
         }
     }
 
+    private Vector3 lastPos;
     public void updateImage()
     {
         if (notePositions[currentPointer+preNum].getY()!=newestY)
         {
-            loadImage(notePositions[currentPointer+preNum]);
+            loadImage(notePositions[currentPointer+preNum], notePositions[currentPointer+preNum-1]);
         }
         newestY = notePositions[currentPointer+preNum].getY();
     }
 
-    private void loadImage(NotePos notePos)
+    private void loadImage(NotePos newLineNote, NotePos oldLineNote)
     {
+        Vector3 newPos = new Vector3(lastPos.x + staffController.actualStaffWidth - newLineNote.getActualX(),
+            lastPos.y + newLineNote.getActualY() - oldLineNote.getActualY(), 0);
+        GameObject staff = GameObject.Instantiate(image, newPos, Quaternion.identity);
+        staffList.Add(staff);
+        lastPos = newPos;
+        staff.transform.SetParent(staffParent.transform);
+        if (staffList.Count>2)
+        {
+            GameObject.Destroy(staffList[0]);
+            staffList.RemoveAt(0);
+        }
         
-        GameObject staff = GameObject.Instantiate(image, new Vector3(notePos.getRealXWithScale(), -12.13f, 0), Quaternion.identity);
-        GameObject mask = GameObject.Instantiate(staffController.mask, new Vector3(notePos.getRealXWithScale(), -12.13f, 0), Quaternion.identity);
-        // Debug.Log("load image");
+    }
+    private void initImage()
+    {
+        lastPos = new Vector3(staffController.staffOffset.x, staffController.staffOffset.y, 0);
+        GameObject staff = GameObject.Instantiate(image, lastPos, Quaternion.identity);
+        staff.transform.SetParent(staffParent.transform);
+        staffList.Add(staff);
     }
 
     public float getCurrentPositon()
@@ -84,6 +103,8 @@ public class StaffImageManager
        float currentPosition = notePositions[currentPointer].getRealX() + interval * beatDecimal;
        return currentPosition;
     }
+
+    
     
     
     

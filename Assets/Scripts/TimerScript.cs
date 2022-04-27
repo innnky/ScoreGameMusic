@@ -7,6 +7,7 @@ public class TimerScript : MonoBehaviour
 {
 
     private int startTime = 0;
+    private bool isRunning = false;
     public TextMeshProUGUI textMeshProUGUI;
     // Start is called before the first frame update
     void Start()
@@ -22,12 +23,25 @@ public class TimerScript : MonoBehaviour
 
     public int GetTime()
     {
-        var time = (int)(Time.time * 1000) - startTime;
-        return time;
+        if (isRunning)
+        {
+            var time = (int)(Time.time * 1000) - startTime;
+            return time;
+            
+        }
+
+        return 0;
     }
 
     public void StartTiming()
     {
         startTime = (int)(Time.time * 1000);
+        isRunning = true;
     }
+    public void StopTiming()
+    {
+        isRunning = false;
+    }
+    
+    
 }
