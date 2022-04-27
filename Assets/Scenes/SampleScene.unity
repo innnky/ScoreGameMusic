@@ -1725,6 +1725,7 @@ MonoBehaviour:
   actualHeight: 0
   actualStaffWidth: 27.8
   staffOffset: {x: 3.53, y: -12.28}
+  movementController: {fileID: 1480395782}
 --- !u!4 &939830628
 Transform:
   m_ObjectHideFlags: 0
@@ -2844,6 +2845,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bgs: {fileID: 372144599}
+  xOffset: 4
 --- !u!4 &1480395783
 Transform:
   m_ObjectHideFlags: 0

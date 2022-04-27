@@ -37,6 +37,7 @@ public class StaffController : MonoBehaviour
     private StaffImageManager staffImageManager;
     public Vector2 staffOffset;
     // public Vector2 allStaffOffset;
+    public MovementController movementController;
     
     void Start()
     {
@@ -49,6 +50,10 @@ public class StaffController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (timerScript.getPaused())
+        {
+            return;
+        }
         staffImageManager.update();
 
         float currentPositon = staffImageManager.getCurrentPositon();
