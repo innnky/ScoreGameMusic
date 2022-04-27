@@ -14,7 +14,7 @@ public class DetermineController : MonoBehaviour
     private TimerScript _timerScript;
     public TextMeshProUGUI determineStatus;
     public Animator determineAnimator;
-
+    public AudioController audioController;
     void Start()
     {
         _timerScript = GameObject.Find("TimeController").GetComponent<TimerScript>();
@@ -26,7 +26,7 @@ public class DetermineController : MonoBehaviour
             _notes.Add(new Note(jsonDataJnote.key, jsonDataJnote.beat, BPM, perfectRange, goodRange, jsonDataJnote.isRest));
         }
         TextAsset jsonText2 = Resources.Load("NotesTimeDistinct") as TextAsset;
-        JsonData jsonData2 = JsonUtility.FromJson<JsonData>(jsonText.text);
+        JsonData jsonData2 = JsonUtility.FromJson<JsonData>(jsonText2.text);
         foreach (var jsonDataJnote2 in jsonData2.jnotes)
         {
             _distinctNotes.Add(new Note(jsonDataJnote2.key, jsonDataJnote2.beat, BPM, perfectRange, goodRange, jsonDataJnote2.isRest));
@@ -42,6 +42,15 @@ public class DetermineController : MonoBehaviour
             if (!_notes[i].GetStatus() && t > _notes[i].GetMissTime())
             {
                 _notes[i].SetComplete();
+                if (_notes[i].GetKey()==0)
+                {
+                    audioController.PlayKick();
+                }
+                else if (_notes[i].GetKey()==2)
+                {
+                    audioController.PlayHihatClose();
+                }
+                // audioController
                 MissTriggered();
             }
         }
@@ -88,6 +97,11 @@ public class DetermineController : MonoBehaviour
     {
         determineAnimator.Play("DetermineStatusAnimation");
         determineStatus.text = "Good!!";
+    }
+    //get _distinctNotes
+    public List<Note> GetDistinctNotes()
+    {
+        return _distinctNotes;
     }
 }
 
